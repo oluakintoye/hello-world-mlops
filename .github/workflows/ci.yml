@@ -1,4 +1,4 @@
-name: CI - Train and Save the model
+name: CI - Train and save the model
 
 on:
   push:
@@ -8,36 +8,34 @@ on:
 
 jobs:
   matrix-pip:
-    name: Train and Save the model
-    runs-on: ubuntu-latest
+    name: Train and save the model
+    runs-on: ubuntu-latest        #free VM runner it can run-on since its a public repo
     strategy:
       matrix:
         python: [3.11, 3.12]
-    
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      
-      - name: Setup python 
-        uses: actions/setup-python@v4
-        with:
-           python-version: ${{ matrix.python }}
-      
-      - name: Upgrade pip
+  
+    steps:                          # whatever steps have been executed manually goes here
+      - name: Checkout              # checkout the source-code so that the VM has the latest repo
+        uses: actions/checkout@v4   # github has actions versions to automate your checkout process
+
+      - name: Setup python
+        uses: actions/setup-python@v4           # reference actions doc to see other github actions doc
+        with:                                   # to specify the version of python to setup
+          python-version: ${{ matrix.python }}  # refers to the python version we provided above
+
+      - name: Upgrade pip                                           # good practice to upgrade pip
         run: python -m pip install --upgrade pip setuptools wheel
 
-      - name: Install project dependencies
+      - name: Install project dependencies                          # install project dependencies
         run: python -m pip install -r requirements.txt
 
       - name: Train the model
         run: |
-           python train.py
-           ls -la artifacts
-      
-      - name: Upload artifacts
+          python train.py
+          ls -la artifacts
+
+      - name: Upload artifacts              # uploading actifacts so whoever triggers the CI can reference/download the artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ml-artifacts-${{ matrix.python }}-${{ github.run_id }}
           path: artifacts
-
-
