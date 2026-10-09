@@ -31,7 +31,7 @@ jobs:
 
       - name: Train the model
         run: |
-          python train.py
+          python train.py                   # ignore this comment; quick ct check
           ls -la artifacts
 
       - name: Upload artifacts              # uploading actifacts so whoever triggers the CI can reference/download the artifacts
